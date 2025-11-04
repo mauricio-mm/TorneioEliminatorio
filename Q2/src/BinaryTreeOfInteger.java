@@ -8,16 +8,12 @@ public class BinaryTreeOfInteger {
         public Node father;
         public Node left;
         public Node right;
-        public String name;
-        public Integer layer;
         private Integer element;
 
         public Node(Integer element) {
             father = null;
             left   = null;
-            right  = null;
-            name   = null;
-            layer  = null;
+            right  = null;            
             this.element = element;
         }
     }
@@ -155,34 +151,10 @@ public class BinaryTreeOfInteger {
 
     private void positionsPreAux(Node n, LinkedListOfInteger lista) {
         if (n != null) {
-            lista.add(n.element);           // visita raiz
-            positionsPreAux(n.left,lista);  // percorre subarvore da esq
-            positionsPreAux(n.right,lista); // percorre subarvore da dir
+            lista.add(n.element);           
+            positionsPreAux(n.left,lista);  
+            positionsPreAux(n.right,lista); 
         }
     }
 
-    public String setNameNode(Integer element, String name) {
-        Node n = searchNodeRef(element, root);
-        n.name = name;
-        return n.name;
-    }
-
-    public Boolean setWinner(Integer element) {
-        Node n = searchNodeRef(element, root);
-        if (n.father != null)
-        {
-            n.father = n;
-            return true;
-        }
-        return false;
-    }
-
-    public Integer maxHeigth() {
-        Node n = searchNodeRef(count, root);
-        return n.layer;
-    }
-
-    public Integer maxLeaves() {
-        return count/2;
-    }
-}
+}   
