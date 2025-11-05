@@ -8,12 +8,14 @@ public class BinaryTreeOfInteger {
         public Node father;
         public Node left;
         public Node right;
+        public String name;
         private Integer element;
 
         public Node(Integer element) {
             father = null;
             left   = null;
-            right  = null;            
+            right  = null; 
+            name   = null;           
             this.element = element;
         }
     }
@@ -157,4 +159,8 @@ public class BinaryTreeOfInteger {
         }
     }
 
+    public void setName(Integer element, String name) {
+        Node n = searchNodeRef(element,root);
+        n.name = name;
+    }
 }   

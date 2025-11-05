@@ -207,7 +207,34 @@ public class BinaryTreeOfInteger {
         System.out.print("(" + n.element + (n.name != null ? " - " + n.name : "") + ") ");
     }    
     //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    public void printBreadOrder() {
+        System.out.println("Percurso em LARGURA (usando FilaArray):");
 
+        if (root == null) {
+            System.out.println("(árvore vazia)");
+            return;
+        }
+
+        FilaArray fila = new FilaArray();
+        fila.enqueue(root.element);
+
+        while (!fila.isEmpty()) {
+            Integer atualElem = fila.dequeue();
+            Node atual = searchNodeRef(atualElem, root);
+
+            System.out.print("(" + atual.element + (atual.name != null ? " - " + atual.name : "") + ") ");
+
+            if (atual.left != null)
+                fila.enqueue(atual.left.element);
+            if (atual.right != null)
+                fila.enqueue(atual.right.element);
+        }
+
+        System.out.println();
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////
     public int maxHeight() {
         return maxHeight(root);
     }
@@ -250,6 +277,5 @@ public class BinaryTreeOfInteger {
 
         return (left != null) ? left : right;
     }
-
 
 }   
