@@ -12,7 +12,10 @@ public class GeneralTreeOfInteger {
             father = null;
             this.element = element;
             subtrees = new LinkedList<>();
+            // optional human-readable name for UI
+            this.name = null;
         }
+        public String name;
         private void addSubtree(Node n) {
             n.father = this;
             subtrees.add(n);
@@ -61,6 +64,60 @@ public class GeneralTreeOfInteger {
                 return aux;
         }
         return aux;
+    }
+
+    // --- Naming support ---
+    public boolean setName(Integer elem, String name) {
+        Node n = searchNodeRef(elem, root);
+        if (n == null) return false;
+        n.name = name;
+        return true;
+    }
+
+    public String getName(Integer elem) {
+        Node n = searchNodeRef(elem, root);
+        if (n == null) return null;
+        return n.name;
+    }
+
+    public Integer findElementByName(String name) {
+        if (root == null) return null;
+        return findElementByNameAux(root, name);
+    }
+
+    private Integer findElementByNameAux(Node n, String name) {
+        if (n == null) return null;
+        if (n.name != null && n.name.equals(name)) return n.element;
+        for (int i = 0; i < n.getSubtreesSize(); i++) {
+            Integer found = findElementByNameAux(n.getSubtree(i), name);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    // --- Consistency checker: single root and no cycles, and count matches node count ---
+    public boolean isConsistent() {
+        if (root == null) return true; // empty tree considered consistent
+        java.util.HashSet<Integer> visited = new java.util.HashSet<>();
+        try {
+            int c = isConsistentAux(root, visited);
+            return (c == count);
+        } catch (IllegalStateException e) {
+            return false;
+        }
+    }
+
+    private int isConsistentAux(Node n, java.util.HashSet<Integer> visited) {
+        if (n == null) return 0;
+        if (visited.contains(n.element)) throw new IllegalStateException("Cycle detected");
+        visited.add(n.element);
+        int total = 1;
+        for (int i = 0; i < n.getSubtreesSize(); i++) {
+            Node child = n.getSubtree(i);
+            if (child.father != n) throw new IllegalStateException("Parent link inconsistent");
+            total += isConsistentAux(child, visited);
+        }
+        return total;
     }
 
     public boolean add(Integer elem, Integer elemFather) {

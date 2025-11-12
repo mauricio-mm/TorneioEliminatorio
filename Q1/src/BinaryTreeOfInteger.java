@@ -134,6 +134,13 @@ public class BinaryTreeOfInteger {
         Node n = new Node(element); // primeiro cria o nodo
         n.father = aux; // faz o novo nodo apontar para o pai
         aux.right = n;// faz o pai apontar para o filho
+        // inicializa a camada do novo nodo com base no pai (evita NullPointerException)
+        if (n.father != null && n.father.layer != null) {
+            n.layer = n.father.layer + 1;
+        } else {
+            // se por algum motivo o pai não tiver layer, inicializa com 0 para consistência
+            n.layer = 0;
+        }
         count++; // atualiza count
         return true;
     }
@@ -278,4 +285,76 @@ public class BinaryTreeOfInteger {
         return (left != null) ? left : right;
     }
 
-}   
+    // Busca element (Integer) de um nodo a partir do nome armazenado
+    public Integer findElementByName(String name) {
+        return findElementByName(root, name);
+    }
+
+    private Integer findElementByName(Node n, String name) {
+        if (n == null) return null;
+        if (n.name != null && n.name.equals(name))
+            return n.element;
+        Integer left = findElementByName(n.left, name);
+        if (left != null) return left;
+        return findElementByName(n.right, name);
+    }
+
+    // Retorna o nome associado a um elemento (ou null se não existir)
+    public String getName(Integer element) {
+        Node n = searchNodeRef(element, root);
+        if (n == null) return null;
+        return n.name;
+    }
+
+    // Conta folhas (nodos sem filhos)
+    public int countLeaves() {
+        return countLeaves(root);
+    }
+
+    private int countLeaves(Node n) {
+        if (n == null) return 0;
+        if (n.left == null && n.right == null) return 1;
+        return countLeaves(n.left) + countLeaves(n.right);
+    }
+
+    // Conta nodos internos (partidas)
+    public int countInternalNodes() {
+        return countNodes(root) - countLeaves(root);
+    }
+
+    // Retorna uma string descrevendo o caminho do jogador até a final
+    // e indica onde foi eliminado se aplicável.
+    public String pathToFinal(Integer element) {
+        Node n = searchNodeRef(element, root);
+        if (n == null) return "Jogador não encontrado.";
+        String playerName = n.name;
+        String displayPlayer = (playerName != null) ? playerName : element.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Caminho de ").append(displayPlayer).append(" até a final:\n");
+
+        Node cur = n;
+        boolean eliminated = false;
+        while (cur.father != null) {
+            Node parent = cur.father;
+            sb.append("Partida (").append(parent.element);
+            if (parent.name != null) sb.append(" - ").append(parent.name);
+            sb.append(") -> ");
+
+            if (parent.name != null && (playerName == null || !parent.name.equals(playerName))) {
+                sb.append("Eliminado aqui por ").append(parent.name).append("\n");
+                eliminated = true;
+                break;
+            } else {
+                sb.append("Avançou (ou ainda não decidido)\n");
+            }
+            cur = parent;
+        }
+
+        if (!eliminated) {
+            sb.append("Chegou à final (ou ainda está na disputa).\n");
+        }
+        return sb.toString();
+    }
+
+}
+
